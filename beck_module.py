@@ -5,6 +5,8 @@ from typing import Union, Literal
 import os
 import sys
 import socket
+import numpy as np
+import sounddevice as sd
 
 
 def smooth_print(text: str, delay: Union[float, int]) -> None:
@@ -158,3 +160,26 @@ def is_online(host: str = "8.8.8.8", port: int = 53, timeout: int = 3) -> bool:
         return True
     except (OSError, socket.timeout):
         return False
+    
+def play_beep(frequency: int, duration: float) -> None:
+    """
+    Play a beep sound at a specified frequency and duration.
+
+    Parameters:
+    frequency (int): The frequency of the beep in Hertz.
+    duration (float): The duration of the beep in seconds.
+
+    Returns:
+    None
+    """
+    if duration < 0:
+        raise ValueError("Duration must be a non-negative float.")
+    if frequency <= 0:
+        raise ValueError("Frequency must be a positive integer.")
+    
+    sample_rate = 44100  # samples per second
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    wave = 0.5 * np.sin(2 * np.pi * frequency * t)
+
+    sd.play(wave, sample_rate)
+    sd.wait()  # Wait until sound has finished playing
