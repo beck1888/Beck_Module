@@ -183,3 +183,14 @@ def play_beep(frequency: int, duration: float) -> None:
 
     sd.play(wave, sample_rate)
     sd.wait()  # Wait until sound has finished playing
+
+def say(message_to_speak: str) -> None:
+    """Uses text to speech to say a message out loud.
+    
+    Parameters:
+    message_to_speak (str): The message to speak.
+    
+    Returns:
+    None
+    """
+    os.system("say " + message_to_speak)
