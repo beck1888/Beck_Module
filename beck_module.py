@@ -1,3 +1,5 @@
+# curl -O https://raw.githubusercontent.com/beck1888/Beck_Module/main/beck_module.py
+
 try:
     from gtts import gTTS
     import io
