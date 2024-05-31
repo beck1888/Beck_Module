@@ -58,11 +58,23 @@ def get_date() -> str:
     print(date_str)
     return date_str
 
-class cursor:
-    def hide():
+class Cursor:
+    """
+    A class to manage the visibility of the cursor in the terminal.
+    """
+
+    @staticmethod
+    def hide() -> None:
+        """
+        Hide the cursor in the terminal.
+        """
         sys.stdout.write("\033[?25l")
         sys.stdout.flush()
 
-    def show():
+    @staticmethod
+    def show() -> None:
+        """
+        Show the cursor in the terminal.
+        """
         sys.stdout.write("\033[?25h")
         sys.stdout.flush()
