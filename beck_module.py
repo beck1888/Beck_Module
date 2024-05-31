@@ -1,8 +1,10 @@
 try:
+    from gtts import gTTS
     import io
     import importlib
     import numpy as np
     import os
+    from playsound import playsound
     import socket
     import sounddevice as sd
     import sys
@@ -243,3 +245,20 @@ def capture_screenshot(url: str) -> bytes:
     finally:
         # Quit the WebDriver
         driver.quit()
+
+def google_say(message_to_speak: str) -> None:
+    """Uses google text to speech to say a message out loud."""
+
+    # Ensures the user is online (an internet connection is needed to use google text to speech API)
+    if not is_online():
+        raise ConnectionError("An internet connection is needed to use google text to speech API. Use say() instead for offline usage.")
+
+    # Uses the Google Text-to-Speech API to convert text to speech and save it as an audio file
+    tts = gTTS(text=message_to_speak, lang='en')
+    tts.save('gtts_output.mp3')
+
+    # To play the audio file
+    playsound("gtts_output.mp3")
+
+    # To delete the audio file
+    os.remove("gtts_output.mp3")
