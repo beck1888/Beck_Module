@@ -4,6 +4,8 @@ from datetime import datetime
 from typing import Union, Literal
 import os
 import sys
+import socket
+
 
 def smooth_print(text: str, delay: Union[float, int]) -> None:
     """Prints out a string one character at a time.
@@ -135,3 +137,24 @@ def print_formatted(text: str, style: Literal['black', 'red', 'green', 'brown', 
 
     # Print the text with the specified style
     print(f"{styles[style]}{text}{styles['end']}")
+
+def is_online(host: str = "8.8.8.8", port: int = 53, timeout: int = 3) -> bool:
+    """
+    Check if the computer is online by attempting to connect to a specified host.
+
+    Args:
+        host (str): The host to connect to, default is Google's DNS server (8.8.8.8).
+        port (int): The port to connect to, default is 53.
+        timeout (int): The timeout duration in seconds, default is 3 seconds.
+
+    Returns:
+        bool: True if the computer is online, False otherwise.
+    """
+    try:
+        # Create a socket object
+        socket_obj = socket.create_connection((host, port), timeout)
+        # Close the socket connection
+        socket_obj.close()
+        return True
+    except (OSError, socket.timeout):
+        return False
