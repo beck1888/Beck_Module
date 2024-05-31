@@ -41,7 +41,11 @@ The Beck Module is a collection of commonly used functions by Beck in his coding
 
     `from beck_module import *` (import method 2 - for if you are using many of the functions within)
 
-2. Use any functions in your project like this
+2. Setup
+
+    1. Replace the filepath for the chromedriver with your own path
+
+3. Use any functions in your project like this
 
     `b.get_time()` (based on import method 1)
 

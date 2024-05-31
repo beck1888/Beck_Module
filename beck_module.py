@@ -7,7 +7,11 @@ import sys
 import socket
 import numpy as np
 import sounddevice as sd
-
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from PIL import Image
+import io
 
 def smooth_print(text: str, delay: Union[float, int]) -> None:
     """Prints out a string one character at a time.
@@ -194,3 +198,45 @@ def say(message_to_speak: str) -> None:
     None
     """
     os.system("say " + message_to_speak)
+
+def capture_screenshot(url: str) -> bytes:
+    """
+    Captures a screenshot of the given URL at 2560x1600 resolution and returns the screenshot as bytes.
+
+    Args:
+        url (str): The URL of the webpage to capture.
+
+    Returns:
+        bytes: The screenshot of the webpage as a byte array.
+    """
+    # Set up the options for headless browsing
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=2560,1600")
+
+    # Set up the WebDriver service
+    service = Service(executable_path='/Users/beckorion/Documents/Sources/Drivers/chromedriver')
+
+    # Initialize the WebDriver
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    try:
+        # Navigate to the URL
+        driver.get(url)
+
+        # Capture the screenshot
+        screenshot = driver.get_screenshot_as_png()
+
+        # Convert the screenshot to bytes
+        screenshot_bytes = io.BytesIO(screenshot)
+
+        # Open the screenshot using PIL
+        image = Image.open(screenshot_bytes)
+
+        # Save the screenshot to a byte array
+        byte_array = io.BytesIO()
+        image.save(byte_array, format='PNG')
+        return byte_array.getvalue()
+    finally:
+        # Quit the WebDriver
+        driver.quit()
