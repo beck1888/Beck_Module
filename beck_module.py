@@ -15,6 +15,7 @@ try:
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.chrome.service import Service
     from typing import Union, Literal
+    from warnings import warn
 except:
     exit("1 or more modules is missing that's needed by `beck_module.py`. Please resolve and try again.")
 
@@ -194,7 +195,7 @@ def play_beep(frequency: int, duration: float) -> None:
     sd.wait()  # Wait until sound has finished playing
 
 def say(message_to_speak: str) -> None:
-    """Uses text to speech to say a message out loud.
+    """Uses text to speech to say a message out loud (works offline).
     
     Parameters:
     message_to_speak (str): The message to speak.
@@ -246,12 +247,18 @@ def capture_screenshot(url: str) -> bytes:
         # Quit the WebDriver
         driver.quit()
 
-def google_say(message_to_speak: str) -> None:
+def google_say(message_to_speak: str, allow_offline_fallback: bool = False, show_warning: bool = True) -> None:
     """Uses google text to speech to say a message out loud."""
 
     # Ensures the user is online (an internet connection is needed to use google text to speech API)
     if not is_online():
-        raise ConnectionError("An internet connection is needed to use google text to speech API. Use say() instead for offline usage.")
+        if allow_offline_fallback:
+            if show_warning:
+                warn("\033[1;33mFalling back on offline speech. Hide this message by setting show_warning to False.\033[0m")
+            say(message_to_speak)
+            return
+        else:
+            raise ConnectionError("An internet connection is needed to use google text to speech API. \nUse say() instead for offline usage: this can also be achieved by setting the allow_offline_fallback parameter to True in the google_say() function call.")
 
     # Uses the Google Text-to-Speech API to convert text to speech and save it as an audio file
     tts = gTTS(text=message_to_speak, lang='en')
