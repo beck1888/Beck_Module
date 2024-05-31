@@ -1,17 +1,17 @@
-import time
-import importlib
-from datetime import datetime
-from typing import Union, Literal
-import os
-import sys
-import socket
-import numpy as np
-import sounddevice as sd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from PIL import Image
 import io
+import importlib
+import numpy as np
+import os
+import socket
+import sounddevice as sd
+import sys
+import time
+from datetime import datetime
+from PIL import Image
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from typing import Union, Literal
 
 def smooth_print(text: str, delay: Union[float, int]) -> None:
     """Prints out a string one character at a time.
