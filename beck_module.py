@@ -1,17 +1,20 @@
-import io
-import importlib
-import numpy as np
-import os
-import socket
-import sounddevice as sd
-import sys
-import time
-from datetime import datetime
-from PIL import Image
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from typing import Union, Literal
+try:
+    import io
+    import importlib
+    import numpy as np
+    import os
+    import socket
+    import sounddevice as sd
+    import sys
+    import time
+    from datetime import datetime
+    from PIL import Image
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.service import Service
+    from typing import Union, Literal
+except:
+    exit("1 or more modules is missing that's needed by `beck_module.py`. Please resolve and try again.")
 
 def smooth_print(text: str, delay: Union[float, int]) -> None:
     """Prints out a string one character at a time.
