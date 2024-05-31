@@ -3,6 +3,7 @@ import importlib
 from datetime import datetime
 from typing import Union
 import os
+import sys
 
 def smooth_print(text: str, delay: Union[float, int]) -> None:
     """Prints out a string one character at a time.
@@ -56,3 +57,12 @@ def get_date() -> str:
     date_str = now.strftime("%m/%d/%Y")
     print(date_str)
     return date_str
+
+class cursor:
+    def hide():
+        sys.stdout.write("\033[?25l")
+        sys.stdout.flush()
+
+    def show():
+        sys.stdout.write("\033[?25h")
+        sys.stdout.flush()
