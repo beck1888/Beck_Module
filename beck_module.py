@@ -45,3 +45,14 @@ def get_time() -> str:
 def clear() -> None:
     """Clears the current terminal."""
     os.system("clear")
+
+def get_date() -> str:
+    """Gets the current date formatted as MM/DD/YYYY.
+    
+    Returns:
+        str: The system's current date in the specified format.
+    """
+    now = datetime.now()
+    date_str = now.strftime("%m/%d/%Y")
+    print(date_str)
+    return date_str
