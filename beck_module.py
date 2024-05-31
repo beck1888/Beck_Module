@@ -78,3 +78,7 @@ class Cursor:
         """
         sys.stdout.write("\033[?25h")
         sys.stdout.flush()
+
+def wait(seconds: Union[float, int]) -> None:
+    """Stops execution for a specified amount of time, the proceeds."""
+    time.sleep(seconds)

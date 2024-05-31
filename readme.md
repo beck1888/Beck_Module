@@ -37,10 +37,16 @@ The Beck Module is a collection of commonly used functions by Beck in his coding
 
 1. In your project's main file, at the top, type:
 
-    `import beck_module as b`
+    `import beck_module as b` (import method 1 - for if you are only using a few functions)
+
+    `from beck_module import *` (import method 2 - for if you are using many of the functions within)
 
 2. Use any functions in your project like this
 
-    `b.get_time()`
+    `b.get_time()` (based on import method 1)
 
-    `b.package_exists('turtle')`
+    `b.package_exists('turtle')` (based on import method 1)
+
+    `Cursor.hide()` (based on import method 2)
+
+    `get_date()` (based on import method 2)
