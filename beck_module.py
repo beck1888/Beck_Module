@@ -212,7 +212,7 @@ def capture_screenshot(url: str) -> bytes:
     # Set up the options for headless browsing
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=2560,1600")
+    chrome_options.add_argument("--window-size=2100,1100")
 
     # Set up the WebDriver service
     service = Service(executable_path='/Users/beckorion/Documents/Sources/Drivers/chromedriver')
