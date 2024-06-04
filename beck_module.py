@@ -7,6 +7,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 # Try to import all of the modules
 try:
     from gtts import gTTS
+    import hashlib
     import io
     import importlib
     from mutagen.mp3 import MP3
@@ -14,6 +15,7 @@ try:
     # import os
     from playsound import playsound
     import pygame
+    import requests
     import socket
     import sounddevice as sd
     import sys
@@ -353,3 +355,28 @@ class Play:
             self.sound.stop()
             # Set the playing flag to False
             self.playing = False
+
+# Update Module
+def update():
+            """Updates the module to the latest version."""
+            try:
+                r = requests.get("https://raw.githubusercontent.com/beck1888/Beck_Module/main/beck_module.py")
+                with open("beck_module.py", "w") as f:
+                    f.write(r.content.decode())
+                print_formatted("Beck Module updated!", 'green')
+            except Exception as e:
+                print_formatted("Module update failed. Version is still out of date.", 'light_red')
+                print("Details: ", e)
+
+# Check for updates
+# Get the cloud version hash
+r = requests.get("https://raw.githubusercontent.com/beck1888/Beck_Module/main/beck_module.py")
+cloud_version_hash = hashlib.md5(r.content).hexdigest()
+
+# Get the local version hash
+with open("beck_module.py", "r") as f:
+    local_version_hash = hashlib.md5(f.read().encode()).hexdigest()
+
+# Compare the hashes
+if cloud_version_hash != local_version_hash:
+    print_formatted("Beck Module is out of date. To update, run: python3 beck_module.py update", 'yellow')
