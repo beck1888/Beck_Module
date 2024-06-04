@@ -1,15 +1,23 @@
 # curl -O https://raw.githubusercontent.com/beck1888/Beck_Module/main/beck_module.py
 
+# Setting environment variables
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" 
+
+# Try to import all of the modules
 try:
     from gtts import gTTS
     import io
     import importlib
+    from mutagen.mp3 import MP3
     import numpy as np
-    import os
+    # import os
     from playsound import playsound
+    import pygame
     import socket
     import sounddevice as sd
     import sys
+    import threading
     import time
     from datetime import datetime
     from PIL import Image
@@ -271,3 +279,77 @@ def google_say(message_to_speak: str, allow_offline_fallback: bool = False, show
 
     # To delete the audio file
     os.remove("gtts_output.mp3")
+
+# Using pygame as a better audio player
+class Play:
+    def __init__(self, filename):
+        """
+        Initializes a Play object with the given filename.
+
+        Args:
+            filename (str): The path to the audio file to be played.
+        """
+        # Initialize the pygame mixer
+        pygame.mixer.init()
+
+        # Store the filename
+        self.filename = filename
+
+        # Load the sound from the file
+        self.sound = pygame.mixer.Sound(filename)
+
+        # Set the playing flag to False
+        self.playing = False
+
+    def length(self):
+        """
+        Returns the length of the audio file in seconds.
+
+        Returns:
+            float: The length of the audio file in seconds.
+        """
+        audio = MP3(self.filename)
+        return audio.info.length
+
+    def _wait_and_clear_playing_flag(self):
+        wait(self.length())
+        self.playing = False
+
+    def play(self, hold_execution: bool = True, *, die_with_main_thread: bool = False, pause_main_thread: bool = False):
+        """
+        Plays the audio file.
+
+        Args:
+            hold_execution (bool, optional): If True, the function will wait for the audio file to finish playing before continuing. Defaults to True.
+            die_with_main_thread (bool, optional): If True, the sound will stop with the main thread (when the __main__ thread exits the sound will be stopped). If False, the sound will play to the end, holding open the __main__ thread even if it reaches the end. Defaults to False.
+            pause_main_thread (bool, optional): If True, the __main__ thread will be paused while the sound is playing. Defaults to False.
+        """
+        if not self.playing:
+            self.sound.play()
+            self.playing = True
+
+            if hold_execution:
+                hold_audio_player_thread = threading.Thread(target=self._wait_and_clear_playing_flag)
+                hold_audio_player_thread.daemon = die_with_main_thread
+                hold_audio_player_thread.start()
+
+                if die_with_main_thread or pause_main_thread:
+                    hold_audio_player_thread.join()
+            elif pause_main_thread:
+                raise ValueError("Cannot pause the main thread if the execution is not held.")
+
+    def stop(self):
+        """
+        Stops the audio file if it is currently playing.
+
+        This function stops the audio file if it is currently playing. It sets the playing flag to False and stops the audio file using the pygame mixer.
+
+        Returns:
+            None
+        """
+        # If the audio file is currently playing
+        if self.playing:
+            # Stop the audio file
+            self.sound.stop()
+            # Set the playing flag to False
+            self.playing = False

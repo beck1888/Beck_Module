@@ -1,7 +1,7 @@
 # Beck Module
 
 ## About
-The Beck Module is a collection of commonly used functions by Beck in his coding. This module was created so he didn't have to rewrite these functions in every single project file. Therefore, the functions in this module are an assortment of various ones with no common theme or goal. They all have annotations and a docstring for ease of use.
+The Beck Module is a collection of commonly used functions by Beck in his coding. This module was created so he didn't have to rewrite these functions in every single project file. Therefore, the functions in this module are an assortment of various ones with no common theme or goal. They all have annotations and a docstring for ease of use. I might write documentation for them at some point in the future.
 
 ## Use
 
