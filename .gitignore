@@ -5,3 +5,4 @@ output.txt
 gtts_output.mp3
 audio.mp3
 .venv
+.env
