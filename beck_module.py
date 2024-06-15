@@ -2,7 +2,7 @@
 
 # Setting environment variables
 import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" 
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"  # Hide pygame support / welcome message
 
 # Try to import all of the modules
 try:
@@ -26,6 +26,7 @@ try:
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.chrome.service import Service
+    import subprocess
     from typing import Union, Literal
     from warnings import warn
 except:
@@ -356,7 +357,121 @@ class Play:
             # Set the playing flag to False
             self.playing = False
 
-# Update Module
+## Apple Script UI Functions
+def check_if_file_exists(file_path: str) -> bool:
+    """
+    Checks if a file exists
+
+    Args:
+        file_path: The path to the file
+
+    Returns:
+        True if the file exists, False otherwise
+    """
+    return subprocess.call(["test", "-f", file_path]) == 0
+
+def collect_input_ui(message: str, icon_path: str = None) -> str:
+    """
+    Shows a UI element using Apple Script with an input box
+
+    Args:
+        message: The message to show in the input box
+        icon_path: The path to the icon to display in the dialog (shows no icon if none is provided)
+
+    Returns:
+        The value entered by the user
+    """
+
+    if icon_path is not None:
+        if not check_if_file_exists(icon_path):
+            raise FileNotFoundError(f"File not found: {icon_path}")
+        script = (
+            'display dialog "{}" default answer "" with icon POSIX file "{}" buttons {{"Submit"}} default button "Submit"'
+        ).format(message, icon_path)
+    else:
+        script = (
+            'display dialog "{}" default answer "" buttons {{"Submit"}} default button "Submit"'
+        ).format(message)
+    
+    return subprocess.check_output(["osascript", "-e", script]).decode("utf-8").strip().removeprefix("button returned:Submit, text returned:")
+
+def collect_input_ui_password(message: str, icon_path: str = None) -> str:
+    """
+    Shows a UI element using Apple Script with an input box
+
+    Args:
+        message: The message to show in the input box
+        icon_path: The path to the icon to display in the dialog (shows no icon if none is provided)
+
+    Returns:
+        The value entered by the user
+    """
+
+    if icon_path is not None:
+        if not check_if_file_exists(icon_path):
+            raise FileNotFoundError(f"File not found: {icon_path}")
+        script = (
+            'display dialog "{}" default answer "" with hidden answer with icon POSIX file "{}" buttons {{"Submit"}} default button "Submit"'
+        ).format(message, icon_path)
+    else:
+        script = (
+            'display dialog "{}" default answer "" with hidden answer buttons {{"Submit"}} default button "Submit"'
+        ).format(message)
+
+    return subprocess.check_output(["osascript", "-e", script]).decode("utf-8").strip().removeprefix("button returned:Submit, text returned:")
+
+def popup_ui(message: str, icon_path: str = None) -> None:
+    """
+    Shows a UI element using Apple Script with an input box
+
+    Args:
+        message: The message to show in the input box
+        icon_path: The path to the icon to display in the dialog (shows no icon if none is provided)
+
+    Returns:
+        None
+    """
+
+    if icon_path is not None:
+        if not check_if_file_exists(icon_path):
+            raise FileNotFoundError(f"File not found: {icon_path}")
+        script = (
+            'display dialog "{}" with icon POSIX file "{}" buttons {{"Ok"}} default button "Ok"'
+        ).format(message, icon_path)
+    else:
+        script = (
+            'display dialog "{}" buttons {{"Ok"}} default button "Ok"'
+        ).format(message)
+    
+    subprocess.check_output(["osascript", "-e", script])
+
+def ask_for_confirmation(message: str, icon_path: str = None) -> bool:
+    """
+    Shows a UI element using Apple Script with an input box
+
+    Args:
+        message: The message to show in the input box
+        icon_path: The path to the icon to display in the dialog (shows no icon if none is provided)
+
+    Returns:
+        True if the user confirmed, False otherwise
+    """
+
+    if icon_path is not None:
+        if not check_if_file_exists(icon_path):
+            raise FileNotFoundError(f"File not found: {icon_path}")
+        script = (
+            'display dialog "{}" with icon POSIX file "{}" buttons {{"No", "Yes"}} default button "Yes"'
+        ).format(message, icon_path)
+    else:
+        script = (
+            'display dialog "{}" buttons {{"No", "Yes"}} default button "Yes"'
+        ).format(message)
+
+    return subprocess.check_output(["osascript", "-e", script]).decode("utf-8").strip().removeprefix("button returned:") == "Yes"
+
+### MAIN ###
+# Updater code
 def update():
             """Updates the module to the latest version."""
             try:
@@ -368,15 +483,18 @@ def update():
                 print_formatted("Module update failed. Version is still out of date.", 'light_red')
                 print("Details: ", e)
 
-# Check for updates
-# Get the cloud version hash
-r = requests.get("https://raw.githubusercontent.com/beck1888/Beck_Module/main/beck_module.py")
-cloud_version_hash = hashlib.md5(r.content).hexdigest()
+# This code will run on import
+if os.environ.get("BECK_MODULE_VERSION_OUTDATE_ALERT") != "hide":
+    # Check for updates
+    # Get the cloud version hash
+    r = requests.get("https://raw.githubusercontent.com/beck1888/Beck_Module/main/beck_module.py")
+    cloud_version_hash = hashlib.md5(r.content).hexdigest()
 
-# Get the local version hash
-with open("beck_module.py", "r") as f:
-    local_version_hash = hashlib.md5(f.read().encode()).hexdigest()
+    # Get the local version hash
+    with open("beck_module.py", "r") as f:
+        local_version_hash = hashlib.md5(f.read().encode()).hexdigest()
 
-# Compare the hashes
-if cloud_version_hash != local_version_hash:
-    print_formatted("Beck Module is out of date. To update, run: python3 beck_module.py update", 'yellow')
+    # Compare the hashes
+    if cloud_version_hash != local_version_hash:
+        print_formatted("Beck Module is out of date. To update, run: python3 beck_module.py update", 'yellow')
+        print_formatted("To hide this message, set the BECK_MODULE_VERSION_OUTDATE_ALERT environment variable to 'hide'", 'dark_gray')
