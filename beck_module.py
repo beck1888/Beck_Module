@@ -26,6 +26,9 @@ try:
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.support.wait import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.common.by import By
     import subprocess
     from typing import Union, Literal
     from warnings import warn
@@ -218,16 +221,23 @@ def say(message_to_speak: str) -> None:
     """
     os.system("say " + message_to_speak)
 
-def capture_screenshot(url: str) -> bytes:
+def capture_screenshot(url: str, wait_time: int = 2) -> bytes:
     """
     Captures a screenshot of the given URL at 2560x1600 resolution and returns the screenshot as bytes.
 
     Args:
         url (str): The URL of the webpage to capture.
+        wait_time (int, optional): The amount of time to wait for the page to load. Defaults to 2.
 
     Returns:
         bytes: The screenshot of the webpage as a byte array.
     """
+    # Check for websites thar are not supported or disallowed
+    blocked_sites = ["reddit"]
+    for site in blocked_sites:
+        if site.lower() in url.lower():
+            raise ValueError(f"Prohibited option. You are not allowed to capture a screenshot of: {site}")
+
     # Set up the options for headless browsing
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -242,6 +252,10 @@ def capture_screenshot(url: str) -> bytes:
     try:
         # Navigate to the URL
         driver.get(url)
+
+        # Wait for the page to load
+        wait = WebDriverWait(driver, wait_time)
+        wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
 
         # Capture the screenshot
         screenshot = driver.get_screenshot_as_png()
